@@ -40,6 +40,7 @@ print('=== WRAPS ===')
 print(add_two_numbers.__name__, add_two_numbers.__doc__)
 
 # 3 - LRU cache -> Least Recently Used cache algorithm
+
 print('=== LRU Cache ===')
 
 import random
@@ -66,3 +67,34 @@ heavy_processing(0)
 heavy_processing(0)
 # CPU times: user 5 µs, sys: 1 µs, total: 6 µs
 # Wall time: 7.15 µs
+
+print('=== LRU Cache from scratch ===')
+
+from functools import wraps
+
+
+def cache(function):
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        cache_key = args + tuple(kwargs.items())
+        if cache_key in wrapper.cache:
+            output = wrapper.cache[cache_key]
+        else:
+            output = function(*args)
+            wrapper.cache[cache_key] = output
+        return output
+    wrapper.cache = dict()
+    return wrapper
+
+@cache
+def heavy_processing(n):
+    sleep_time = n + random.random()
+    time.sleep(sleep_time)
+
+heavy_processing(1)
+# CPU times: user 446 µs, sys: 864 µs, total: 1.31 ms
+# Wall time: 1.06 s
+
+heavy_processing(1)
+# CPU times: user 11 µs, sys: 0 ns, total: 11 µs
+# Wall time: 13.1 µs
