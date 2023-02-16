@@ -98,3 +98,22 @@ heavy_processing(1)
 heavy_processing(1)
 # CPU times: user 11 µs, sys: 0 ns, total: 11 µs
 # Wall time: 13.1 µs
+
+# 4 - Repeat
+
+def repeat(number_of_times):
+    def decorator(func):
+        @wraps(decorator)
+        def wrapper(*args, **kwargs):
+            for _ in range(number_of_times):
+                output = func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+print("=== REPEAT ===")
+
+@repeat(5)
+def dummy():
+    print("hello")
+    
+dummy()
