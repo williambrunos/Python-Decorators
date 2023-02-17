@@ -1,35 +1,5 @@
-# 1 - Logger
-
-def logger(function):
-    def wrapper(*args, **kwargs):
-        print(f'{function.__name__}: start')
-        output = function(*args, **kwargs)
-        print(f'{function.__name__}: end')
-        return output
-    return wrapper
-
-@logger
-def some_function(text):
-    print(text)
-    return 0
-
-print('=== LOGGER ===')
-output = some_function('hello decorators!')
-print(output)
-
-# 2 - wraps -> to maintain original meta data
-from functools import wraps
-
-def logger(function):
-    # Try commenting the line below
-    @wraps (function)
-    def wrapper(*args, **kwargs):
-        """Wrapper documentation"""
-        print(f'{function.__name__}: start')
-        output = function(*args, **kwargs)
-        print(f'{function.__name__}: end')
-        return output
-    return wrapper
+# 1-2 - wraps -> to maintain original meta data
+from logger_dec import logger
 
 @logger
 def add_two_numbers(first, second):
@@ -68,23 +38,9 @@ heavy_processing(0)
 # CPU times: user 5 µs, sys: 1 µs, total: 6 µs
 # Wall time: 7.15 µs
 
+from cache_dec import cache
+
 print('=== LRU Cache from scratch ===')
-
-from functools import wraps
-
-
-def cache(function):
-    @wraps(function)
-    def wrapper(*args, **kwargs):
-        cache_key = args + tuple(kwargs.items())
-        if cache_key in wrapper.cache:
-            output = wrapper.cache[cache_key]
-        else:
-            output = function(*args)
-            wrapper.cache[cache_key] = output
-        return output
-    wrapper.cache = dict()
-    return wrapper
 
 @cache
 def heavy_processing(n):
@@ -100,15 +56,7 @@ heavy_processing(1)
 # Wall time: 13.1 µs
 
 # 4 - Repeat
-
-def repeat(number_of_times):
-    def decorator(func):
-        @wraps(decorator)
-        def wrapper(*args, **kwargs):
-            for _ in range(number_of_times):
-                output = func(*args, **kwargs)
-        return wrapper
-    return decorator
+from repeat_dec import repeat
 
 print("=== REPEAT ===")
 
@@ -117,3 +65,13 @@ def dummy():
     print("hello")
     
 dummy()
+
+print('=== TIMEIT ===')
+
+from timeit_dec import timeit
+
+@timeit
+def process_data():
+    time.sleep(1)
+
+process_data()
